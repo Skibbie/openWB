@@ -24,13 +24,13 @@ var topicsToSubscribe = [
 	["openWB/hook/3/boolHookConfigured", 0],
 	// verbraucher Konfiguration
 	["openWB/Verbraucher/1/Configured", 0],
-	["openWB/Verbraucher/1/Name", 0],
-	["openWB/Verbraucher/1/Watt", 0],
-	["openWB/Verbraucher/1/DailyYieldImportkWh", 0],
+	["openWB/Verbraucher/1/Name", 1],
+	["openWB/Verbraucher/1/Watt", 1],
+	["openWB/Verbraucher/1/DailyYieldImportkWh", 1],
 	["openWB/Verbraucher/2/Configured", 0],
-	["openWB/Verbraucher/2/Name", 0],
-	["openWB/Verbraucher/2/Watt", 0],
-	["openWB/Verbraucher/2/DailyYieldImportkWh", 0],
+	["openWB/Verbraucher/2/Name", 1],
+	["openWB/Verbraucher/2/Watt", 1],
+	["openWB/Verbraucher/2/DailyYieldImportkWh", 1],
 	// housebattery Konfiguration
 	["openWB/housebattery/boolHouseBatteryConfigured", 0],
 	// SmartHome Konfiguration
@@ -297,6 +297,15 @@ var topicsToSubscribe = [
 	["openWB/SmartHome/Devices/7/Watt", 1],
 	["openWB/SmartHome/Devices/8/Watt", 1],
 	["openWB/SmartHome/Devices/9/Watt", 1],
+	["openWB/SmartHome/Devices/1/Status", 1],
+	["openWB/SmartHome/Devices/2/Status", 1],
+	["openWB/SmartHome/Devices/3/Status", 1],
+	["openWB/SmartHome/Devices/4/Status", 1],
+	["openWB/SmartHome/Devices/5/Status", 1],
+	["openWB/SmartHome/Devices/6/Status", 1],
+	["openWB/SmartHome/Devices/7/Status", 1],
+	["openWB/SmartHome/Devices/8/Status", 1],
+	["openWB/SmartHome/Devices/9/Status", 1],
 	["openWB/SmartHome/Devices/1/RelayStatus", 1],
 	["openWB/SmartHome/Devices/2/RelayStatus", 1],
 	["openWB/SmartHome/Devices/3/RelayStatus", 1],
@@ -380,7 +389,7 @@ var options = {
 };
 
 var clientuid = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
-var client = new Messaging.Client(location.host, 9001, clientuid);
+var client = new Messaging.Client(location.hostname, 9001, clientuid);
 
 $(document).ready(function(){
 	client.connect(options);

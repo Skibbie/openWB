@@ -28,35 +28,13 @@
 
 		<link rel="stylesheet" type="text/css" href="fonts/font-awesome-5.8.2/css/all.css">
 		<!-- include settings-style -->
-		<link rel="stylesheet" type="text/css" href="settings/settings_style.css">
+		<link rel="stylesheet" type="text/css" href="css/settings_style.css">
 
 		<!-- important scripts to be loaded -->
-		<script src="js/jquery-3.4.1.min.js"></script>
+		<script src="js/jquery-3.6.0.min.js"></script>
 		<script src="js/bootstrap-4.4.1/bootstrap.bundle.min.js"></script>
 		<!-- load helper functions -->
-		<script src = "settings/helperFunctions.js?ver=20201231" ></script>
-		<script>
-			function getCookie(cname) {
-				var name = cname + '=';
-				var decodedCookie = decodeURIComponent(document.cookie);
-				var ca = decodedCookie.split(';');
-				for(var i = 0; i <ca.length; i++) {
-					var c = ca[i];
-					while (c.charAt(0) == ' ') {
-						c = c.substring(1);
-					}
-					if (c.indexOf(name) == 0) {
-						return c.substring(name.length, c.length);
-					}
-				}
-				return '';
-			}
-			var themeCookie = getCookie('openWBTheme');
-			// include special Theme style
-			if( '' != themeCookie ){
-				$('head').append('<link rel="stylesheet" href="themes/' + themeCookie + '/settings.css?v=20200801">');
-			}
-		</script>
+		<script src = "settings/helperFunctions.js?ver=20210329" ></script>
 	</head>
 
 	<body>
@@ -72,7 +50,7 @@
 
 		<div role="main" class="container" style="margin-top:20px">
 			<h1>SmartHome</h1>
-			<form action="./tools/savesmarthome.php" method="POST">
+			<form action="./settings/saveconfig.php" method="POST">
 
 				<div class="card border-secondary">
 					<div class="card-header bg-secondary">
@@ -97,14 +75,14 @@
 								<div class="form-row mb-1">
 									<label for="angesteckthooklp1_url" class="col-md-4 col-form-label">URL</label>
 									<div class="col">
-										<input class="form-control" type="text" name="angesteckthooklp1_url" id="angesteckthooklp1_url" value="<?php echo trim(htmlspecialchars($angesteckthooklp1_urlold)) ?>">
+										<input class="form-control" type="text" name="angesteckthooklp1_url" id="angesteckthooklp1_url" value="<?php echo htmlspecialchars($angesteckthooklp1_urlold) ?>">
 										<span class="form-text small">URL die (einmalig) aufgerufen wird wenn ein Fahrzeug an LP1 angesteckt wird. Erneutes Ausführen erfolgt erst nachdem abgesteckt wurde.</span>
 									</div>
 								</div>
 							</div>
 							<hr class="border-secondary">
 							<div class="form-row mb-1">
-								<label for="abgesteckthooklp1" class="col-md-4 col-form-label">Nach Abstecken an Ladepunkt 1</label>
+								<label class="col-md-4 col-form-label">Nach Abstecken an Ladepunkt 1</label>
 								<div class="col">
 									<div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
 										<label class="btn btn-outline-info<?php if($abgesteckthooklp1old == 0) echo " active" ?>">
@@ -120,14 +98,14 @@
 								<div class="form-row mb-1">
 									<label for="abgesteckthooklp1_url" class="col-md-4 col-form-label">URL</label>
 									<div class="col">
-										<input class="form-control" type="text" name="abgesteckthooklp1_url" id="abgesteckthooklp1_url" value="<?php echo trim(htmlspecialchars($abgesteckthooklp1_urlold)) ?>">
+										<input class="form-control" type="text" name="abgesteckthooklp1_url" id="abgesteckthooklp1_url" value="<?php echo htmlspecialchars($abgesteckthooklp1_urlold) ?>">
 										<span class="form-text small">URL die (einmalig) aufgerufen wird wenn ein Fahrzeug an LP1 abgesteckt wird. Erneutes Ausführen erfolgt erst nachdem angesteckt wurde.</span>
 									</div>
 								</div>
 							</div>
 							<hr class="border-secondary">
 							<div class="form-row mb-1">
-								<label for="ladestarthooklp1" class="col-md-4 col-form-label">Nach Ladestart an Ladepunkt 1</label>
+								<label class="col-md-4 col-form-label">Nach Ladestart an Ladepunkt 1</label>
 								<div class="col">
 									<div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
 										<label class="btn btn-outline-info<?php if($ladestarthooklp1old == 0) echo " active" ?>">
@@ -143,14 +121,14 @@
 								<div class="form-row mb-1">
 									<label for="ladestarthooklp1_url" class="col-md-4 col-form-label">URL</label>
 									<div class="col">
-										<input class="form-control" type="text" name="ladestarthooklp1_url" id="ladestarthooklp1_url" value="<?php echo trim(htmlspecialchars($ladestarthooklp1_urlold)) ?>">
+										<input class="form-control" type="text" name="ladestarthooklp1_url" id="ladestarthooklp1_url" value="<?php echo htmlspecialchars($ladestarthooklp1_urlold) ?>">
 										<span class="form-text small">URL die (einmalig) aufgerufen wird wenn ein Ladevorgang an LP1 startet. Erneutes Ausführen erfolgt erst nachdem der Ladevorgang gestoppt wurde.</span>
 									</div>
 								</div>
 							</div>
 							<hr class="border-secondary">
 							<div class="form-row mb-1">
-								<label for="ladestophooklp1" class="col-md-4 col-form-label">Nach Ladestopp an Ladepunkt 1</label>
+								<label class="col-md-4 col-form-label">Nach Ladestopp an Ladepunkt 1</label>
 								<div class="col">
 									<div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
 										<label class="btn btn-outline-info<?php if($ladestophooklp1old == 0) echo " active" ?>">
@@ -166,7 +144,7 @@
 								<div class="form-row mb-1">
 									<label for="ladestophooklp1_url" class="col-md-4 col-form-label">URL</label>
 									<div class="col">
-										<input class="form-control" type="text" name="ladestophooklp1_url" id="ladestophooklp1_url" value="<?php echo trim(htmlspecialchars($ladestophooklp1_urlold)) ?>">
+										<input class="form-control" type="text" name="ladestophooklp1_url" id="ladestophooklp1_url" value="<?php echo htmlspecialchars($ladestophooklp1_urlold) ?>">
 										<span class="form-text small">URL die (einmalig) aufgerufen wird wenn ein Ladevorgang an LP1 stoppt. Erneutes Ausführen erfolgt erst nachdem der Ladevorgang gestartet wurde.</span>
 									</div>
 								</div>
@@ -261,50 +239,50 @@
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>ein_watt" class="col-md-4 col-form-label">Einschaltschwelle</label>
 										<div class="col">
-											<input class="form-control" type="number" min="0" step="10" name="hook<?php echo $deviceNum; ?>ein_watt" id="hook<?php echo $deviceNum; ?>ein_watt" value="<?php echo trim(${"hook" . $deviceNum . "ein_wattold"}) ?>">
+											<input class="form-control" type="number" min="0" step="10" name="hook<?php echo $deviceNum; ?>ein_watt" id="hook<?php echo $deviceNum; ?>ein_watt" value="<?php echo ${"hook" . $deviceNum . "ein_wattold"} ?>">
 											<span class="form-text small">Einschaltschwelle in Watt, bei deren Erreichen das Gerät eingeschaltet werden soll.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>einschaltverz" class="col-md-4 col-form-label">Einschaltverzögerung</label>
 										<div class="col">
-											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>einschaltverz" id="hook<?php echo $deviceNum; ?>einschaltverz" value="<?php echo trim(${"hook" . $deviceNum . "einschaltverzold"}) ?>">
-											<span class="form-text small">Bestimmt die Dauer, für die die Einschaltschwelle überschritten werden muss bevor eingeschaltet wird.</span>
+											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>einschaltverz" id="hook<?php echo $deviceNum; ?>einschaltverz" value="<?php echo ${"hook" . $deviceNum . "einschaltverzold"} ?>">
+											<span class="form-text small">Bestimmt die Dauer in Sekunden, für die die Einschaltschwelle überschritten werden muss bevor eingeschaltet wird.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>ein_url" class="col-md-4 col-form-label">Einschalt-URL</label>
 										<div class="col">
-											<input class="form-control" type="text" name="hook<?php echo $deviceNum; ?>ein_url" id="hook<?php echo $deviceNum; ?>ein_url" value="<?php echo trim(htmlspecialchars(${"hook" . $deviceNum . "ein_urlold"})) ?>">
+											<input class="form-control" type="text" name="hook<?php echo $deviceNum; ?>ein_url" id="hook<?php echo $deviceNum; ?>ein_url" value="<?php echo htmlspecialchars(${"hook" . $deviceNum . "ein_urlold"}) ?>">
 											<span class="form-text small">Einschalturl die aufgerufen wird bei entsprechendem Überschuss.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>_dauer" class="col-md-4 col-form-label">Einschaltdauer</label>
 										<div class="col">
-											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>_dauer" id="hook<?php echo $deviceNum; ?>_dauer" value="<?php echo trim(${"hook" . $deviceNum . "_dauerold"}) ?>">
+											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>_dauer" id="hook<?php echo $deviceNum; ?>_dauer" value="<?php echo ${"hook" . $deviceNum . "_dauerold"} ?>">
 											<span class="form-text small">Einschaltdauer in Minuten. Gibt an, wie lange das Gerät nach Start mindestens aktiv bleiben muss, ehe die Ausschalturl aufgerufen wird.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>aus_watt" class="col-md-4 col-form-label">Ausschaltschwelle</label>
 										<div class="col">
-											<input class="form-control" type="number" step="10" name="hook<?php echo $deviceNum; ?>aus_watt" id="hook<?php echo $deviceNum; ?>aus_watt" value="<?php echo trim(${"hook" . $deviceNum . "aus_wattold"}) ?>">
+											<input class="form-control" type="number" step="10" name="hook<?php echo $deviceNum; ?>aus_watt" id="hook<?php echo $deviceNum; ?>aus_watt" value="<?php echo ${"hook" . $deviceNum . "aus_wattold"} ?>">
 											<span class="form-text small">Ausschaltschwelle in Watt bei die unten stehende URL aufgerufen wird. Soll die Abschaltung bei Bezug stattfinden eine negative Zahl eingeben.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>aus_url" class="col-md-4 col-form-label">Ausschalt-URL</label>
 										<div class="col">
-											<input class="form-control" type="text" name="hook<?php echo $deviceNum; ?>aus_url" id="hook<?php echo $deviceNum; ?>aus_url" value="<?php echo trim(htmlspecialchars(${"hook" . $deviceNum . "aus_urlold"})) ?>">
+											<input class="form-control" type="text" name="hook<?php echo $deviceNum; ?>aus_url" id="hook<?php echo $deviceNum; ?>aus_url" value="<?php echo htmlspecialchars(${"hook" . $deviceNum . "aus_urlold"}) ?>">
 											<span class="form-text small">Ausschalturl, die aufgerufen wird bei entsprechendem Überschuss.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>_ausverz" class="col-md-4 col-form-label">Ausschaltverzögerung</label>
 										<div class="col">
-											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>_ausverz" id="hook<?php echo $deviceNum; ?>_ausverz" value="<?php echo trim(${"hook" . $deviceNum . "_ausverzold"}) ?>">
-											<span class="form-text small">Bestimmt die Dauer, für die die Ausschaltschwelle unterschritten werden muss, bevor ausgeschaltet wird.</span>
+											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>_ausverz" id="hook<?php echo $deviceNum; ?>_ausverz" value="<?php echo ${"hook" . $deviceNum . "_ausverzold"} ?>">
+											<span class="form-text small">Bestimmt die Dauer in Sekunden, für die die Ausschaltschwelle unterschritten werden muss, bevor ausgeschaltet wird.</span>
 										</div>
 									</div>
 								</div>
@@ -349,10 +327,10 @@
 									<label class="col-md-4 col-form-label">Verbraucher <?php echo $deviceNum; ?></label>
 									<div class="col">
 										<div class="btn-group btn-group-toggle btn-block" data-toggle="buttons">
-											<label class="btn btn-outline-info<?php if(${"hook" . $deviceNum . "_aktivold"} == 0) echo " active" ?>">
+											<label class="btn btn-outline-info<?php if(${"verbraucher" . $deviceNum . "_aktivold"} == 0) echo " active" ?>">
 												<input type="radio" name="verbraucher<?php echo $deviceNum; ?>_aktiv" id="verbraucher<?php echo $deviceNum; ?>_aktivOff" value="0"<?php if(${"verbraucher" . $deviceNum . "_aktivold"} == 0) echo " checked=\"checked\"" ?>>Aus
 											</label>
-											<label class="btn btn-outline-info<?php if(${"hook" . $deviceNum . "_aktivold"} == 1) echo " active" ?>">
+											<label class="btn btn-outline-info<?php if(${"verbraucher" . $deviceNum . "_aktivold"} == 1) echo " active" ?>">
 												<input type="radio" name="verbraucher<?php echo $deviceNum; ?>_aktiv" id="verbraucher<?php echo $deviceNum; ?>_aktivOn" value="1"<?php if(${"verbraucher" . $deviceNum . "_aktivold"} == 1) echo " checked=\"checked\"" ?>>An
 											</label>
 										</div>
@@ -362,7 +340,7 @@
 									<div class="form-row mb-1">
 										<label for="verbraucher<?php echo $deviceNum; ?>_name" class="col-md-4 col-form-label">Name</label>
 										<div class="col">
-											<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_name" id="verbraucher<?php echo $deviceNum; ?>_name" value="<?php echo trim(${"verbraucher" . $deviceNum . "_nameold"}) ?>">
+											<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_name" id="verbraucher<?php echo $deviceNum; ?>_name" value="<?php echo ${"verbraucher" . $deviceNum . "_nameold"} ?>">
 											<span class="form-text small">Name des Verbrauchers.</span>
 										</div>
 									</div>
@@ -370,13 +348,13 @@
 										<label for="verbraucher<?php echo $deviceNum; ?>_typ" class="col-md-4 col-form-label">Anbindung</label>
 										<div class="col">
 											<select name="verbraucher<?php echo $deviceNum; ?>_typ" id="verbraucher<?php echo $deviceNum; ?>_typ" class="form-control">
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "http\n") echo "selected" ?> value="http">Http Abfrage</option>
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "mpm3pm\n") echo "selected" ?> value="mpm3pm">MPM3PM</option>
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "sdm120\n") echo "selected" ?> value="sdm120">SDM120</option>
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "sdm630\n") echo "selected" ?> value="sdm630">SDM630</option>
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "abb-b23\n") echo "selected" ?> value="abb-b23">ABB-B23</option>
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "tasmota\n") echo "selected" ?> value="tasmota">Sonoff mit Tasmota FW</option>
-												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "shelly\n") echo "selected" ?> value="shelly">Shelly 1PM</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "http") echo "selected" ?> value="http">Http Abfrage</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "mpm3pm") echo "selected" ?> value="mpm3pm">MPM3PM</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "sdm120") echo "selected" ?> value="sdm120">SDM120</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "sdm630") echo "selected" ?> value="sdm630">SDM630</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "abb-b23") echo "selected" ?> value="abb-b23">ABB-B23</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "tasmota") echo "selected" ?> value="tasmota">Sonoff mit Tasmota FW</option>
+												<option <?php if(${"verbraucher" . $deviceNum . "_typold"} == "shelly") echo "selected" ?> value="shelly">Shelly 1PM</option>
 											</select>
 										</div>
 									</div>
@@ -384,14 +362,14 @@
 										<div class="form-row mb-1">
 											<label for="verbraucher<?php echo $deviceNum; ?>_urlw" class="col-md-4 col-form-label">URL Leistung</label>
 											<div class="col">
-												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_urlw" id="verbraucher<?php echo $deviceNum; ?>_urlw" value="<?php echo trim(htmlspecialchars(${"verbraucher" . $deviceNum . "_urlwold"})) ?>">
+												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_urlw" id="verbraucher<?php echo $deviceNum; ?>_urlw" value="<?php echo htmlspecialchars(${"verbraucher" . $deviceNum . "_urlwold"}) ?>">
 												<span class="form-text small">URL des Verbrauchers, welche die Momentanleistung in Watt zurück gibt.</span>
 											</div>
 										</div>
 										<div class="form-row mb-1">
 											<label for="verbraucher<?php echo $deviceNum; ?>_urlh" class="col-md-4 col-form-label">URL Zählerstand</label>
 											<div class="col">
-												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_urlh" id="verbraucher<?php echo $deviceNum; ?>_urlh" value="<?php echo trim(htmlspecialchars(${"verbraucher" . $deviceNum . "_urlhold"})) ?>">
+												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_urlh" id="verbraucher<?php echo $deviceNum; ?>_urlh" value="<?php echo htmlspecialchars(${"verbraucher" . $deviceNum . "_urlhold"}) ?>">
 												<span class="form-text small">URL des Verbrauchers, welche den Zählerststand in Watt Stunden zurück gibt.</span>
 											</div>
 										</div>
@@ -400,14 +378,14 @@
 										<div class="form-row mb-1">
 											<label for="verbraucher<?php echo $deviceNum; ?>_source" class="col-md-4 col-form-label">Source</label>
 											<div class="col">
-												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_source" id="verbraucher<?php echo $deviceNum; ?>_source" value="<?php echo trim(htmlspecialchars(${"verbraucher" . $deviceNum . "_sourceold"})) ?>">
+												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_source" id="verbraucher<?php echo $deviceNum; ?>_source" value="<?php echo htmlspecialchars(${"verbraucher" . $deviceNum . "_sourceold"}) ?>">
 												<span class="form-text small">Bei lokal angeschlossenem Zähler ist dies z. B. /dev/ttyUSB3. Wird ein Modbus Ethernet Konverter genutzt, z.B. der aus dem Shop, hier die IP Adresse eintragen.</span>
 											</div>
 										</div>
 										<div class="form-row mb-1">
 											<label for="verbraucher<?php echo $deviceNum; ?>_id" class="col-md-4 col-form-label">Source</label>
 											<div class="col">
-												<input class="form-control" type="number" min="1" step="1" name="verbraucher<?php echo $deviceNum; ?>_id" id="verbraucher<?php echo $deviceNum; ?>_id" value="<?php echo trim(${"verbraucher" . $deviceNum . "_idold"}) ?>">
+												<input class="form-control" type="number" min="1" step="1" name="verbraucher<?php echo $deviceNum; ?>_id" id="verbraucher<?php echo $deviceNum; ?>_id" value="<?php echo ${"verbraucher" . $deviceNum . "_idold"} ?>">
 												<span class="form-text small">Modbus ID.</span>
 											</div>
 										</div>
@@ -420,7 +398,7 @@
 										<div class="form-row mb-1">
 											<label for="verbraucher<?php echo $deviceNum; ?>_ip" class="col-md-4 col-form-label">Source</label>
 											<div class="col">
-												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_ip" id="verbraucher<?php echo $deviceNum; ?>_ip" value="<?php echo trim(${"verbraucher" . $deviceNum . "_ipold"}) ?>">
+												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_ip" id="verbraucher<?php echo $deviceNum; ?>_ip" value="<?php echo ${"verbraucher" . $deviceNum . "_ipold"} ?>">
 												<span class="form-text small">IP Adresse des Geräts.</span>
 											</div>
 										</div>

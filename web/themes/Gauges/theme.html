@@ -75,7 +75,7 @@
 		}
 	</style>
 	<!-- important scripts to be loaded -->
-	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="js/jquery-3.6.0.min.js"></script>
 	<script src="js/bootstrap-4.4.1/bootstrap.bundle.min.js"></script>
 	<script src="js/RGraph.common.core.js"></script>
 	<script src="js/RGraph.common.dynamic.js"></script>
@@ -670,7 +670,7 @@
 				<div class="form-row form-group mb-1 vaRow regularTextSize">
 					<label for="MaxPriceForCharging" class="col-3 col-form-label text-right">max. Preis:</label>
 					<div class="col">
-						<input type="range" class="form-control-range rangeInput" id="MaxPriceForCharging" min="-25" max="40" step="0.1" value="0" data-topicprefix="openWB/global/awattar/">
+						<input type="range" class="form-control-range rangeInput" id="MaxPriceForCharging" min="-25" max="95" step="0.1" value="0" data-topicprefix="openWB/global/awattar/">
 					</div>
 					<label for="MaxPriceForCharging" class="col-3 col-form-label valueLabel" suffix="ct/kWh"></label>
 				</div>
@@ -1639,6 +1639,8 @@
 					labelsValueBold: true,
 					labelsValueItalic: true,
 					labelsValueSize: 17,
+					titleBottomPos: 0.61,
+					titleBottomBold: true,
 					adjustable: false,
 					textAccessible: false,
 					colorsRanges: [[0, 1000, 'green', 3]],

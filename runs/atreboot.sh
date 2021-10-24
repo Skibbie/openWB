@@ -12,6 +12,8 @@ echo "loading config"
 . /var/www/html/openWB/runs/updateConfig.sh
 
 sleep 5
+mkdir -p /var/www/html/openWB/web/backup
+touch /var/www/html/openWB/web/backup/.donotdelete
 sudo chown -R www-data:www-data /var/www/html/openWB/web/backup
 sudo chown -R www-data:www-data /var/www/html/openWB/web/tools/upload
 sudo chmod 777 /var/www/html/openWB/openwb.conf
@@ -50,7 +52,8 @@ fi
 # initialize automatic phase switching
 if (( u1p3paktiv == 1 )); then
 	echo "triginit..."
-	sudo python /var/www/html/openWB/runs/triginit.py -d $u1p3ppause
+	# quick init of phase switching with default pause duration (2s)
+	sudo python /var/www/html/openWB/runs/triginit.py
 fi
 
 # check if buttons are configured and start daemon
@@ -112,6 +115,8 @@ if (( displayaktiv == 1 )); then
 		echo "@xset s 600" >> /home/pi/.config/lxsession/LXDE-pi/autostart
 		echo "@chromium-browser --incognito --disable-pinch --kiosk http://localhost/openWB/web/display.php" >> /home/pi/.config/lxsession/LXDE-pi/autostart
 	fi
+	echo "deleting browser cache"
+	rm -rf /home/pi/.cache/chromium
 fi
 
 # restart smarthomehandler
@@ -154,9 +159,9 @@ fi
 echo "LAN/WLAN..."
 ethstate=$(</sys/class/net/eth0/carrier)
 if (( ethstate == 1 )); then
-	sudo ifconfig eth0:0 192.168.193.5 netmask 255.255.255.0 up
+	sudo ifconfig eth0:0 $virtual_ip_eth0 netmask 255.255.255.0 up
 else
-	sudo ifconfig wlan0:0 192.168.193.6 netmask 255.255.255.0 up
+	sudo ifconfig wlan0:0 $virtual_ip_wlan0 netmask 255.255.255.0 up
 fi
 
 # check for apache configuration
@@ -192,9 +197,9 @@ else
 	sudo pip install evdev
 fi
 if ! [ -x "$(command -v sshpass)" ];then
-	apt-get -qq update
+	sudo apt-get -qq update
 	sleep 1
-	apt-get -qq install sshpass
+	sudo apt-get -qq install sshpass
 fi
 if [ $(dpkg-query -W -f='${Status}' php-gd 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
@@ -221,18 +226,27 @@ fi
 echo "timezone..."
 sudo cp /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
+
+if [ ! -f /home/pi/ssl_patched ]; then 
+	sudo apt-get update 
+	sudo apt-get -qq install -y openssl libcurl3 curl libgcrypt20 libgnutls30 libssl1.1 libcurl3-gnutls libssl1.0.2 php7.0-cli php7.0-gd php7.0-opcache php7.0 php7.0-common php7.0-json php7.0-readline php7.0-xml php7.0-curl libapache2-mod-php7.0 
+	touch /home/pi/ssl_patched 
+fi
+
+
 # check for mosquitto packages
 echo "mosquitto..."
 if [ ! -f /etc/mosquitto/mosquitto.conf ]; then
 	sudo apt-get update
 	sudo apt-get -qq install -y mosquitto mosquitto-clients
-	sudo service mosquitto restart
+	sudo service mosquitto start
 fi
 
 # check for mosquitto configuration
-if [ ! -f /etc/mosquitto/conf.d/openwb.conf ]; then
+if [ ! -f /etc/mosquitto/conf.d/openwb.conf ] || ! sudo grep -Fq "persistent_client_expiration" /etc/mosquitto/mosquitto.conf; then
+	echo "updating mosquitto config file"
 	sudo cp /var/www/html/openWB/web/files/mosquitto.conf /etc/mosquitto/conf.d/openwb.conf
-	sudo service mosquitto restart
+	sudo service mosquitto reload
 fi
 
 # check for other dependencies
@@ -263,11 +277,22 @@ if python3 -c "import pymodbus" &> /dev/null; then
 else
 	sudo pip3 install pymodbus
 fi
+if python3 -c "import requests" &> /dev/null; then
+	echo 'python requests installed...'
+else
+	sudo pip3 install requests
+fi
 #Prepare for jq in Python
 if python3 -c "import jq" &> /dev/null; then
 	echo 'jq installed...'
 else
 	sudo pip3 install jq
+fi
+#Prepare for ipparser in Python
+if python3 -c "import ipparser" &> /dev/null; then
+	echo 'ipparser installed...'
+else
+	sudo pip3 install ipparser
 fi
 
 # update version
@@ -282,12 +307,6 @@ echo "" > /var/www/html/openWB/ramdisk/lastregelungaktiv
 echo "" > /var/www/html/openWB/ramdisk/mqttlastregelungaktiv
 chmod 777 /var/www/html/openWB/ramdisk/mqttlastregelungaktiv
 
-#if [ $(dpkg-query -W -f='${Status}' php-curl 2>/dev/null | grep -c "ok installed") -eq 0 ];
-#then
-#  sudo apt-get update
-#  sudo apt-get -qq install -y php-curl
-#fi
-
 # check for slave config and start handler
 if (( isss == 1 )); then
 	echo "isss..."
@@ -300,9 +319,9 @@ if (( isss == 1 )); then
 	# second IP already set up !
 	ethstate=$(</sys/class/net/eth0/carrier)
 	if (( ethstate == 1 )); then
-		sudo ifconfig eth0:0 192.168.193.5 netmask 255.255.255.0 down
+		sudo ifconfig eth0:0 $virtual_ip_eth0 netmask 255.255.255.0 down
 	else
-		sudo ifconfig wlan0:0 192.168.193.6 netmask 255.255.255.0 down
+		sudo ifconfig wlan0:0 $virtual_ip_wlan0 netmask 255.255.255.0 down
 	fi
 fi
 

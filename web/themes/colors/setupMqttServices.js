@@ -111,6 +111,19 @@ var topicsToSubscribe = [
 	["openWB/system/DayGraphData10", 0],
 	["openWB/system/DayGraphData11", 0],
 	["openWB/system/DayGraphData12", 0],
+		// monthly graph
+		["openWB/system/MonthGraphData1", 0],
+		["openWB/system/MonthGraphData2", 0],
+		["openWB/system/MonthGraphData3", 0],
+		["openWB/system/MonthGraphData4", 0],
+		["openWB/system/MonthGraphData5", 0],
+		["openWB/system/MonthGraphData6", 0],
+		["openWB/system/MonthGraphData7", 0],
+		["openWB/system/MonthGraphData8", 0],
+		["openWB/system/MonthGraphData9", 0],
+		["openWB/system/MonthGraphData10", 0],
+		["openWB/system/MonthGraphData11", 0],
+		["openWB/system/MonthGraphData12", 0],
 
 	// global topics
 	["openWB/global/WHouseConsumption", 1],
@@ -319,6 +332,15 @@ var topicsToSubscribe = [
 	["openWB/SmartHome/Devices/7/RelayStatus", 1],
 	["openWB/SmartHome/Devices/8/RelayStatus", 1],
 	["openWB/SmartHome/Devices/9/RelayStatus", 1],
+	["openWB/SmartHome/Devices/1/Status", 1],
+	["openWB/SmartHome/Devices/2/Status", 1],
+	["openWB/SmartHome/Devices/3/Status", 1],
+	["openWB/SmartHome/Devices/4/Status", 1],
+	["openWB/SmartHome/Devices/5/Status", 1],
+	["openWB/SmartHome/Devices/6/Status", 1],
+	["openWB/SmartHome/Devices/7/Status", 1],
+	["openWB/SmartHome/Devices/8/Status", 1],
+	["openWB/SmartHome/Devices/9/Status", 1],
 	["openWB/config/get/SmartHome/Devices/1/mode", 1],
 	["openWB/config/get/SmartHome/Devices/2/mode", 1],
 	["openWB/config/get/SmartHome/Devices/3/mode", 1],
@@ -328,6 +350,16 @@ var topicsToSubscribe = [
 	["openWB/config/get/SmartHome/Devices/7/mode", 1],
 	["openWB/config/get/SmartHome/Devices/8/mode", 1],
 	["openWB/config/get/SmartHome/Devices/9/mode", 1],
+	["openWB/config/get/SmartHome/Devices/1/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/2/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/3/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/4/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/5/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/6/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/7/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/8/device_homeConsumtion", 1],
+	["openWB/config/get/SmartHome/Devices/9/device_homeConsumtion", 1],
+	["openWB/SmartHome/Status/wattnichtHaus", 1],
 	// Config Vars Sofort current
 	["openWB/config/get/sofort/lp/1/current", 1],
 	["openWB/config/get/sofort/lp/2/current", 1],
@@ -394,7 +426,7 @@ var options = {
 };
 
 var clientuid = Math.random().toString(36).replace(/[^a-z]+/g, "").substr(0, 5);
-var client = new Messaging.Client(location.host, 9001, clientuid);
+var client = new Messaging.Client(location.hostname, 9001, clientuid);
 
 $(document).ready(function () {
 	client.connect(options);

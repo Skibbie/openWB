@@ -2,7 +2,8 @@
 
 import os, requests, json, time, sys, os
 from datetime import datetime, timezone
-from requests.exceptions import Timeout
+from requests.exceptions import Timeout, RequestException
+from json import JSONDecodeError
 
 ramdiskdir = '/var/www/html/openWB/ramdisk/'
 moduledir = '/var/www/html/openWB/modules/soc_eq/'
@@ -20,6 +21,10 @@ myPid         = str(os.getpid())
 
 tok_url   = "https://id.mercedes-benz.com/as/token.oauth2"
 soc_url   = "https://api.mercedes-benz.com/vehicledata/v2/vehicles/"+VIN+"/containers/electricvehicle"
+
+
+soc = None
+range = None
 
 def socDebugLog(message):
 	local_time = datetime.now(timezone.utc).astimezone()
@@ -127,7 +132,7 @@ if int(expires_in) < int(time.time()):
 		json.dump({'expires_in' : expires_in, 'refresh_token' : refresh_token, 'access_token' : access_token}, fd)
 		fd.close()
 	else:
-		handleResponse("Refresh",ref.status_code,ref.txt)
+		handleResponse("Refresh",ref.status_code,ref.text)
 
 #call API for SoC
 header = {'authorization': 'Bearer ' + access_token}
@@ -139,6 +144,11 @@ try:
 except Timeout:
 	socDebugLog("Soc Request Timed Out")
 	exit(2)
+
+except RequestException:
+	socDebugLog("Soc Request Request Exception occured " + soc_url)
+	exit(2)
+
 if Debug >= 1:
 	socDebugLog("SOC Request: " + str(req_soc.status_code))
 	socDebugLog("SOC Response: " + req_soc.text)
@@ -153,7 +163,12 @@ except:
 
 if req_soc.status_code == 200:
 	#valid Response
-	res = json.loads(req_soc.text)
+	try:
+		res = json.loads(req_soc.text)
+	except JSONDecodeError:
+		socDebugLog("Soc Response NO VALID JSON " + req_soc.text)
+		exit(2)
+
 	#Extract SoC value and write to file
 	for entry in res:
 		for values in entry:
@@ -163,7 +178,12 @@ if req_soc.status_code == 200:
 				range = entry[values]['value']
 			else:
 				socDebugLog("unknown entry: " + entry)
-
+	if not soc:
+		socDebugLog("SoC Value not filled " + req_soc.text)
+		soc = "0"
+	if not range:
+		socDebugLog("RangeElectric Value not filled " + req_soc.text)
+		range = "0"
 	socDebugLog("SOC: " + soc + " RANGE: " + range)
 	fd = open(soc_file,'w')
 	fd.write(str(soc))

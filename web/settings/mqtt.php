@@ -26,11 +26,13 @@
 		<!-- Normalize -->
 		<link rel="stylesheet" type="text/css" href="css/normalize-8.0.1.css">
 		<!-- include settings-style -->
-		<link rel="stylesheet" type="text/css" href="settings/settings_style.css">
+		<link rel="stylesheet" type="text/css" href="css/settings_style.css">
 
 		<!-- important scripts to be loaded -->
-		<script src="js/jquery-3.4.1.min.js"></script>
+		<script src="js/jquery-3.6.0.min.js"></script>
 		<script src="js/bootstrap-4.4.1/bootstrap.bundle.min.js"></script>
+		<!-- load helper functions -->
+		<script src = "settings/helperFunctions.js?ver=20210329" ></script>
 	</head>
 
 	<body>
@@ -49,7 +51,8 @@
 		<div id="nav"></div> <!-- placeholder for navbar -->
 		<div role="main" class="container" style="margin-top:20px">
 			<?php
-				$files = glob('/etc/mosquitto/conf.d/99-bridge-*.conf*');
+				$files = glob('/etc/mosquitto/conf.d/99-bridge-*.conf');
+				$files = array_merge($files, glob('/etc/mosquitto/conf.d/99-bridge-*.conf.no'));
 				$filesCount = count($files);
 				// give the user the option to configure more than one bridge
 				array_push($files, "");
@@ -71,6 +74,7 @@
 					$exportEvu = false;
 					$exportPv = false;
 					$exportAllLps = false;
+					$tryPrivate = false;
 					$subscribeChargeMode = false;
 					$exportGraph = false;
 					$exportStatus = false;
@@ -78,7 +82,7 @@
 					$bridgeEnabled = preg_match('/.*\.conf$/', $currentFile) === 1;
 					$subscribeConfigs = false;
 					foreach($bridgeLines as $bridgeLine) {
-						//echo "line '$bridgeLine'<br/>";
+						// echo "line '$bridgeLine'<br/>";
 						if(is_null($remotePrefix) && preg_match('/^\s*topic\s+([^\s]+?)\s+([^\s]+?)\s+([^\s]+?)\s+([^\s]+?)\s+([^\s]+?)\s+/', $bridgeLine, $matches) === 1) {
 							// echo "Matches: " . var_dump($matches);
 							$remotePrefix = trim($matches[5]);
@@ -100,6 +104,10 @@
 						}
 						else if(preg_match('/^\s*bridge_tls_version\s+(.+)/', $bridgeLine, $matches) === 1) {
 							$tlsVersion = trim($matches[1]);
+						}
+
+						if(preg_match('/^\s*try_private\s+true/', $bridgeLine) === 1) {
+							$tryPrivate = true;
 						}
 
 						if(preg_match('/^\s*topic\s+openWB\/global\/#/', $bridgeLine) === 1) {
@@ -131,9 +139,9 @@
 					if ($loopCount != 0) echo "<hr>";
 			?>
 			<h1> <?php if($loopCount != $filesCount) echo "MQTT-Brücke \"$connectionName\""; else echo "Neue MQTT-Brücke"; ?></h1>
-			<form action="./tools/savemqtt.php" method="POST">
+			<form action="./settings/savemqtt.php" method="POST">
 				<!-- previous bridge name, needed for renaming a bridge -->
-				<input type="hidden" readonly="readonly" name="bridge" value="<?php echo($connectionName); ?>">
+				<input type="hidden" name="bridge" value="<?php echo($connectionName); ?>">
 
 				<!-- Konfiguration -->
 				<div class="card border-secondary">
@@ -143,7 +151,7 @@
 					<div class="card-body">
 						<div class="card-text alert alert-danger">
 						<u>ACHTUNG</u>: Die Konfiguration einer MQTT-Brücke erlaubt allen Nutzern mit Zugang zum entfernten MQTT-Server alle weitergeleiteten Daten dieser openWB einzusehen!<br/>
-						Es wird dringend empfohlen, dies nur für nicht-öffentliche MQTT-Server unter Verwendung starker Transport-Verschlüsselung (TLS)  mit persönlichenm Login und 
+						Es wird dringend empfohlen, dies nur für nicht-öffentliche MQTT-Server unter Verwendung starker Transport-Verschlüsselung (TLS)  mit persönlichenm Login und
 						strenger Zugriffskontrolle (zumindest für die MQTT-Thema unterhalb von "Entfernter Präfix") zu aktivieren!
 						</div>
 						<div class="form-group">
@@ -188,20 +196,20 @@
 						<div class="form-row mb-1">
 							<label for="RemotePass" class="col-md-4 col-form-label">Passwort</label>
 							<div class="col">
-								<input class="form-control" ype="password" size="35" name="RemotePass" id="RemotePass" pattern="^\S.\S+$" value="<?php echo $remotePassword; ?>">
+								<input class="form-control" type="password" size="35" name="RemotePass" id="RemotePass" pattern="^\S.\S+$" value="<?php echo $remotePassword; ?>">
 								<span class="form-text small">Passwort für den Login auf dem entfernten MQTT-Server. Leerzeichen am Anfang und Ende des Passworts werden nicht unterstützt.</span>
 							</div>
 						</div>
 						<div class="form-row mb-1">
 							<label for="RemotePrefix" class="col-md-4 col-form-label">Entfernter Präfix</label>
 							<div class="col">
-								<input class="form-control" ype="text" size="55" name="RemotePrefix" id="RemotePrefix" pattern="^[a-zA-Z0-9_\-\/]+[/]$" value="<?php echo $remotePrefix; ?>">
+								<input class="form-control" type="text" size="55" name="RemotePrefix" id="RemotePrefix" pattern="^[a-zA-Z0-9_\-\/]+[/]$" value="<?php echo $remotePrefix; ?>">
 								<span class="form-text small">MQTT-Thema Präfix, welches dem 'openWB/...' vorangestellt wird.<br/>
 									Beispiel: Wenn in diesem Feld 'pfx/' eingetragen wird, werden alle Weiterleitungen und Registrierungen auf der entfernten Seite mit 'pfx/openWB/...' benannt.</span>
 							</div>
 						</div>
 						<div class="form-row mb-1">
-							<label for="mqttProtocol" class="col-md-4 col-form-label">MQTT Protokoll</label>
+							<label class="col-md-4 col-form-label">MQTT Protokoll</label>
 							<div class="col">
 								<div class="btn-group btn-block btn-group-toggle" data-toggle="buttons">
 									<label class="btn btn-outline-info<?php if($mqttProtocol == "mqttv31") echo " active" ?>">
@@ -215,7 +223,7 @@
 							</div>
 						</div>
 						<div class="form-row mb-1">
-							<label for="tlsProtocol" class="col-md-4 col-form-label">TLS Protokoll</label>
+							<label class="col-md-4 col-form-label">TLS Protokoll</label>
 							<div class="col">
 								<div class="btn-group btn-block btn-group-toggle" data-toggle="buttons">
 									<label class="btn btn-outline-info<?php if($tlsVersion == "tlsv1.3") echo " active"; if(!$tlsv13Supported) echo " disabled"; ?>">
@@ -229,6 +237,22 @@
 									Version des TLS Protokolls, welches zur Verschlüsselung der Kommunikation mit dem entfernten Server verwendet wird.
 									TLSv 1.3 ist empfohlen, wird jedoch erst ab Debian Version "Buster" unterstützt.
 								</span>
+							</div>
+						</div>
+						<div class="form-row mb-1">
+							<label class="col-md-4 col-form-label">Br&uuml;cke signalisieren</label>
+							<div class="col">
+								<div class="btn-group btn-block btn-group-toggle" data-toggle="buttons">
+									<label class="btn btn-outline-info<?php if($exportStatus == 0) echo " active" ?>">
+										<input type="radio" name="tryPrivate" id="tryPrivateOff" value="0"<?php if(! $tryPrivate) echo " checked=\"checked\"" ?>>Aus
+									</label>
+									<label class="btn btn-outline-info<?php if($exportStatus == 1) echo " active" ?>">
+										<input type="radio" name="tryPrivate" id="tryPrivateOn" value="1"<?php if($tryPrivate) echo " checked=\"checked\"" ?>>An
+									</label>
+								</div>
+								<span class="form-text small">Aktiviert eine propriet&auml;re MQTT Protokoll-Erweiterung des Mosquitto Brokers, welche dem entfernten Broker signalisiert dass es sich um
+								eine MQTT Br&uumlcke handelt. Ergibt bessere Leistung mit Mosquitto-Brokern, ist jedoch inkompatibel mit vielen anderen MQTT-Brokern. Daher bitte nur aktivieren, wenn der Ziel-Broker
+								sicher ein Mosquitto-Broker ist.</span>
 							</div>
 						</div>
 					</div>
@@ -289,7 +313,7 @@
 					<div class="card-body">
 						<div class="card-text alert alert-danger">
 							<u>ACHTUNG</u>: Dies erlaubt jedem Nutzer des entfernten MQTT-Servers mit Zugriff auf die entsprechenden Themen, diese openWB fern zu steuern!<br/>
-							Es wird dringend empfohlen, dies nur für nicht-öffentliche MQTT-Server unter Verwendung starker Transport-Verschlüsselung (TLS) mit 
+							Es wird dringend empfohlen, dies nur für nicht-öffentliche MQTT-Server unter Verwendung starker Transport-Verschlüsselung (TLS) mit
 							persönlichem Login und strenger Zugriffskontrolle zu aktivieren!<br/>
 							KEINESFALLS AUF <u>ÖFFENTLICH ZUGÄNGLICHEN</u> MQTT-SERVERN AKTIVEREN!!!
 						</div>
@@ -341,27 +365,26 @@
 					</form>
 				</div>
 			</div>
-		</div>
-	</div>  <!-- container -->
+		</div>  <!-- container -->
 
-	<footer class="footer bg-dark text-light font-small">
-		<div class="container text-center">
-				<small>Sie befinden sich hier: Einstellungen/MQTT-Brücke</small>
-		</div>
-	</footer>
+		<footer class="footer bg-dark text-light font-small">
+			<div class="container text-center">
+					<small>Sie befinden sich hier: Einstellungen/MQTT-Brücke</small>
+			</div>
+		</footer>
 
-	<script>
+		<script>
 
-		$.get(
-			{ url: "settings/navbar.html", cache: false },
-			function(data){
-				$("#nav").replaceWith(data);
-				// disable navbar entry for current page
-				$('#navMqttBruecke').addClass('disabled');
-			}
-		);
+			$.get(
+				{ url: "settings/navbar.html", cache: false },
+				function(data){
+					$("#nav").replaceWith(data);
+					// disable navbar entry for current page
+					$('#navMqttBruecke').addClass('disabled');
+				}
+			);
 
-	</script>
+		</script>
 
 	</body>
 </html>
