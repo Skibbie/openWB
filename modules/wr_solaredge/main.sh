@@ -1,14 +1,23 @@
 #!/bin/bash
 
-Solaredgebatwr="0"
-if [[ $solaredgespeicherip == $solaredgepvip ]]  ; then
-	Solaredgebatwr="1"  
-fi
-if [[ $solaredgewr2ip != "none" ]]; then
-	python /var/www/html/openWB/modules/wr_solaredge/solaredge2wr.py $solaredgepvip $solaredgepvslave1 $Solaredgebatwr $solaredgewr2ip $wr1extprod
+OPENWBBASEDIR=$(cd "$(dirname "$0")/../../" && pwd)
+RAMDISKDIR="${OPENWBBASEDIR}/ramdisk"
+DMOD="PV"
+#DMOD="MAIN"
+
+if [ $DMOD == "MAIN" ]; then
+	MYLOGFILE="${RAMDISKDIR}/openWB.log"
 else
-	python /var/www/html/openWB/modules/wr_solaredge/solaredgeall.py $solaredgepvip $solaredgepvslave1 $solaredgepvslave2 $solaredgepvslave3 $solaredgepvslave4 $Solaredgebatwr $wr1extprod $solaredgezweiterspeicher $solaredgesubbat
+	MYLOGFILE="${RAMDISKDIR}/nurpv.log"
 fi
 
-pvwatt=$(</var/www/html/openWB/ramdisk/pvwatt)
-echo $pvwatt
+Solaredgebatwr="0"
+if [[ "$solaredgespeicherip" == "$solaredgepvip" ]]; then
+	Solaredgebatwr="1"
+fi
+
+bash "$OPENWBBASEDIR/packages/legacy_run.sh" "modules.devices.solaredge.device" "inverter" "$solaredgepvip" "" "$solaredgepvslave1" "$solaredgepvslave2" "$solaredgepvslave3" "$solaredgepvslave4" "$Solaredgebatwr" "$wr1extprod" "$solaredgezweiterspeicher" "$solaredgesubbat" "$solaredgewr2ip" "1" >>"$MYLOGFILE" 2>&1
+ret=$?
+openwbDebugLog ${DMOD} 2 "RET: ${ret}"
+
+cat "$RAMDISKDIR/pvwatt"

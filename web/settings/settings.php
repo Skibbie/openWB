@@ -79,8 +79,11 @@
 					<div class="card-body">
 						<div class="card-text alert alert-info">
 							Wird hier Ja gewählt ist diese openWB nur ein Ladepunkt und übernimmt keine eigene Regelung.
-							Hier ist Ja zu wählen wenn, bereits eine openWB vorhanden ist und diese nur ein weiterer Ladepunkt der vorhandenen openWB sein soll.
-							<span class="text-danger">Alle in dieser openWB getätigten Einstellungen werden NICHT beachtet.</span>
+							Hier ist Ja zu wählen wenn, bereits eine openWB vorhanden ist und diese nur ein weiterer Ladepunkt der vorhandenen openWB sein soll.<br />
+							Es ist sicherzustellen, dass auf dieser openWB die Modulkonfiguration des <span class="text-danger">ersten Ladepunktes</span>
+							korrekt ist und alle weiteren Ladepunkte <span class="text-danger">deaktiviert</span> sind. Handels es sich hier um eine
+							<span class="text-danger">DUO</span>, so ist auch der <span class="text-danger">zweite Ladepunkt</span> zu aktivieren.<br />
+							<span class="text-danger">Alle weiteren in dieser openWB getätigten Einstellungen werden NICHT beachtet.</span>
 							An der Haupt openWB wird als Ladepunkt "externe openWB" gewählt und die IP Adresse eingetragen.
 						</div>
 						<div id="isssdiv" class="hide">
@@ -92,6 +95,23 @@
 											<option <?php if($ssdisplayold == 0) echo "selected" ?> value="0">Normal</option>
 											<option <?php if($ssdisplayold == 1) echo "selected" ?> value="1">Display der übergeordneten openWB</option>
 										</select>
+									</div>
+								</div>
+								<div class="form-row mb-1">
+									<label class="col-md-4 col-form-label">RFID</label>
+									<div class="col">
+										<div class="btn-group btn-block btn-group-toggle" data-toggle="buttons">
+											<label class="btn btn btn-outline-info<?php if($rfidaktold == 0) echo " active" ?>">
+												<input type="radio" name="rfidakt" id="rfidaktOff" value="0"<?php if($rfidaktold == 0) echo " checked=\"checked\"" ?>>Aus
+											</label>
+											<label class="btn btn btn-outline-info<?php if($rfidaktold != 0) echo " active" ?>">
+												<input type="radio" name="rfidakt" id="rfidaktOn1" value="1"<?php if($rfidaktold != 0) echo " checked=\"checked\"" ?>>An
+											</label>
+										</div>
+										<span class="form-text small">
+											Wenn die openWB nur ein Ladepunkt ist, werden gescannte RFID Tags oder Eingaben am Display an die Haupt openWB weitergegeben.
+											Dort muss der entsprechende Modus konfiguriert und gültige Tags hinterlegt werden.
+										</span>
 									</div>
 								</div>
 							</div>
@@ -144,7 +164,8 @@
 								<label for="etprovider" class="col-md-4 col-form-label">Anbieter</label>
 								<div class="col">
 									<select name="etprovider" id="etprovider" class="form-control">
-										<option <?php if($etproviderold == "et_awattar") echo "selected" ?> value="et_awattar">aWATTar</option>
+										<option <?php if($etproviderold == "et_awattar") echo "selected" ?> value="et_awattar">aWATTar Hourly</option>
+										<option <?php if($etproviderold == "et_awattarcap") echo "selected" ?> value="et_awattarcap">aWATTar Hourly-CAP</option>
 										<option <?php if($etproviderold == "et_tibber") echo "selected" ?> value="et_tibber">Tibber</option>
 									</select>
 								</div>
@@ -170,7 +191,7 @@
 									</p>
 									<p>
 										Behandeln Sie Ihren Token wie ein Passwort, da sich darüber auch persönliche Daten aus Ihrem Tibber-Account abfragen lassen! Die Home-ID können Sie (wenn bekannt)
-										in das Eingebafeld selbst eintragen oder <b>nach Eingabe Ihres Token</b> durch Klick auf den Button von der openWB ermitteln lassen. Unerlaubte Zeichen werden aus dem Token und der Home-ID automatisch gelöscht.
+										in das Eingabefeld selbst eintragen oder <b>nach Eingabe Ihres Token</b> durch Klick auf den Button von der openWB ermitteln lassen. Unerlaubte Zeichen werden aus dem Token und der Home-ID automatisch gelöscht.
 									</p>
 									<p>
 										Bei einer fehlerhaften Tibber-Abfrage wird der Strompreis von der openWB bis zur nächsten erfolgreichen Abfrage mit 99.99ct/kWh festgelegt.
@@ -241,7 +262,7 @@
 														}
 														addressStr = addressStr + ', ' + this.address.postalCode + ' ' + this.address.city;
 														$('#tibberHomesDropdown').append('<option value="' + homeID + '">' + addressStr + '</option>');
-    												});
+													});
 													$('#tibberhomeIdModal').find('.modal-header').removeClass('bg-danger');
 													$('#tibberhomeIdModal').find('.modal-header').addClass('bg-success');
 													$('#tibberhomeIdModalOkBtn').show();
@@ -266,7 +287,7 @@
 													$('#tibberModalSelectHomeIdDiv').hide();
 													$('#tibberhomeid').val('');
 													$('#tibberhomeIdModal').modal("show");
-								  				})
+												})
 										});
 
 										$('#verifyTibberBtn').click(function(){
@@ -323,10 +344,10 @@
 												<div id="tibberModalSelectHomeIdDiv" class="row justify-content-center hide">
 													<div class="col">
 														<div class="form-group">
-														<label for="tibberHomesDropdown">Bitte wählen Sie eine Adresse:</label>
-														<select class="form-control selectpicker" id="tibberHomesDropdown">
-														</select>
-													  </div>
+															<label for="tibberHomesDropdown">Bitte wählen Sie eine Adresse:</label>
+															<select class="form-control selectpicker" id="tibberHomesDropdown">
+															</select>
+														</div>
 													</div>
 												</div>
 
@@ -586,28 +607,38 @@
 							}
 							if(lp4akt == '0') {
 								hideSection('#lp4aktdiv');
+								hideSection('#durchslp4div');
 							} else {
 								showSection('#lp4aktdiv');
+								showSection('#durchslp4div');
 							}
 							if(lp5akt == '0') {
 								hideSection('#lp5aktdiv');
+								hideSection('#durchslp5div');
 							} else {
 								showSection('#lp5aktdiv');
+								showSection('#durchslp5div');
 							}
 							if(lp6akt == '0') {
 								hideSection('#lp6aktdiv');
+								hideSection('#durchslp6div');
 							} else {
 								showSection('#lp6aktdiv');
+								showSection('#durchslp6div');
 							}
 							if(lp7akt == '0') {
 								hideSection('#lp7aktdiv');
+								hideSection('#durchslp7div');
 							} else {
 								showSection('#lp7aktdiv');
+								showSection('#durchslp7div');
 							}
 							if(lp8akt == '0') {
 								hideSection('#lp8aktdiv');
+								hideSection('#durchslp8div');
 							} else {
 								showSection('#lp8aktdiv');
+								showSection('#durchslp8div');
 							}
 						});
 					</script>
@@ -669,6 +700,21 @@
 											</div>
 										</div>
 										<span class="form-text small">Ampere mit denen geladen werden soll um den Ziel SoC zu erreichen.</span>
+									</div>
+								</div>
+
+								<div class="form-row mb-1">
+									<label for="wirkungsgradlp1" class="col-md-4 col-form-label">Wirkungsgrad Ladeelektronik</label>
+									<div class="col">
+										<input class="form-control" type="number" min="1" step="1" max="100" name="wirkungsgradlp1" id="wirkungsgradlp1" value="<?php echo $wirkungsgradlp1old ?>">
+										<span class="form-text small">
+											Wert in Prozent, der den gemittelten Wirkungsgrad der Ladeelektronik angibt.<br>
+											Durch Verluste in der Ladeelektronik (z. B. Umwandlung Wechselspannung in Gleichspannung) gelangt nicht die komplette Energie, welche durch den Zähler in der Wallbox gemesen wird, im Akku des Fahrzeugs.
+											Der anzugebende Wert liegt bei gängigen Fahrzeugen im Bereich 90-95%. Eine Ausnahme stellt der Zoe dar, dessen Chameleonlader je nach Modellversion und freigegebener Leistung der Wallbox teilweise nur auf ca. 50% kommt.<br>
+											Liegen die Angaben der Wallbox und des Fahrzeugs nach der Ladung mehrere Prozent auseinander, dann kann mit dieser Einstellung eine Feinabstimmung erfolgen:<br>
+											SoC an der Wallbox zu hoch: Wirkungsgrad um ein paar Prozent reduzieren<br>
+											SoC an der Wallbox zu gering: Wirkungsgrad um ein paar Prozent erhöhen
+										</span>
 									</div>
 								</div>
 							</div>
@@ -775,23 +821,25 @@
 								</div>
 							</div>
 						</div>
-						<div id="durchslp3div" class="hide">
-							<hr class="border-primary">
-							<div class="form-group">
-								<div class="form-row mb-1">
-									<div class="col">
-										Ladepunkt 3
+						<?php for ($chargepoint = 3; $chargepoint <=8; $chargepoint++) { ?>
+							<div id="durchslp<?php echo $chargepoint ?>div" class="hide">
+								<hr class="border-primary">
+								<div class="form-group">
+									<div class="form-row mb-1">
+										<div class="col">
+											Ladepunkt <?php echo $chargepoint ?>
+										</div>
 									</div>
-								</div>
-								<div class="form-row mb-1">
-									<label for="durchslp3" class="col-md-4 col-form-label">Durchschnittsverbrauch in kWh/100km</label>
-									<div class="col">
-										<input class="form-control" type="number" min="1" step=".1" name="durchslp3" id="durchslp3" value="<?php echo $durchslp3old ?>">
-										<span class="form-text small">Gültige Werte xx.xx, z.B. 14.5. Dient zur Berechnung der geladenen Strecke.</span>
+									<div class="form-row mb-1">
+										<label for="durchslp<?php echo $chargepoint ?>" class="col-md-4 col-form-label">Durchschnittsverbrauch in kWh/100km</label>
+										<div class="col">
+											<input class="form-control" type="number" min="1" step=".1" name="durchslp<?php echo $chargepoint ?>" id="durchslp<?php echo $chargepoint ?>" value="<?php echo ${'durchslp' . $chargepoint . 'old'} ?>">
+											<span class="form-text small">Gültige Werte xx.xx, z.B. 14.5. Dient zur Berechnung der geladenen Strecke.</span>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
+						<?php } ?>
 					</div>
 				</div>
 
@@ -1117,7 +1165,7 @@
 												<input type="range" class="form-control-range rangeInput" name="nachtsoc" id="nachtsoc" min="5" max="100" step="5" value="<?php echo $nachtsocold; ?>">
 											</div>
 										</div>
-										<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts bis xx% SoC geladen in dem angegebenen Zeitfenster. Das SoC Fenster is von von Sonntag Abend bis Freitag Morgen aktiv.</span>
+										<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts bis zur Überschreitung von xx% SoC geladen in dem angegebenen Zeitfenster. Das SoC Fenster is von von Sonntag Abend bis Freitag Morgen aktiv.</span>
 									</div>
 								</div>
 								<div class="form-row mb-1">
@@ -1129,7 +1177,7 @@
 												<input type="range" class="form-control-range rangeInput" name="nachtsoc1" id="nachtsoc1" min="5" max="100" step="5" value="<?php echo $nachtsoc1old; ?>">
 											</div>
 										</div>
-										<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts bis xx% SoC geladen in dem angegebenen Zeitfenster. Das SoC Fenster is von von Freitag Morgen bis Sonntag Abend aktiv.</span>
+										<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts bis zur Überschreitung von xx% SoC geladen in dem angegebenen Zeitfenster. Das SoC Fenster is von von Freitag Morgen bis Sonntag Abend aktiv.</span>
 									</div>
 								</div>
 								<hr class="border-info">
@@ -1303,7 +1351,7 @@
 													<input type="range" class="form-control-range rangeInput" name="nachtsocs1" id="nachtsocs1" min="5" max="100" step="5" value="<?php echo $nachtsocs1old; ?>">
 												</div>
 											</div>
-											<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts bis xx% SoC geladen in dem angegebenen Zeitfenster. Das SoC Fenster is von von Sonntag Abend bis Freitag Morgen aktiv.</span>
+											<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts in dem angegebenen Zeitfenster bis zur Überschreitung von xx% SoC geladen. Das SoC Fenster is von von Sonntag Abend bis Freitag Morgen aktiv.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
@@ -1315,7 +1363,7 @@
 													<input type="range" class="form-control-range rangeInput" name="nachtsoc1s1" id="nachtsoc1s1" min="5" max="100" step="5" value="<?php echo $nachtsoc1s1old; ?>">
 												</div>
 											</div>
-											<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts bis xx% SoC geladen in dem angegebenen Zeitfenster. Das SoC Fenster is von von Freitag Morgen bis Sonntag Abend aktiv.</span>
+											<span class="form-text small">Wenn SoC Modul vorhanden wird Nachts in dem angegebenen Zeitfenster bis zur Überschreitung von xx% SoC geladen. Das SoC Fenster is von von Freitag Morgen bis Sonntag Abend aktiv.</span>
 										</div>
 									</div>
 									<hr class="border-info">

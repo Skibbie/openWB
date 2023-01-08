@@ -51,6 +51,10 @@
 		<div role="main" class="container" style="margin-top:20px">
 			<h1>SmartHome</h1>
 			<form action="./settings/saveconfig.php" method="POST">
+				<div class="alert alert-danger">
+					Dieser Bereich wird bald entfernt. Bitte SmartHome 2.0 nutzen.<br />
+					Werden Teile dieser Seite noch benötigt? Dann bitte <a href="https://www.openwb.de/forum/viewtopic.php?f=14&t=5777" target="_blank" rel="noopener noreferrer">hier im Forum</a> melden.
+				</div>
 
 				<div class="card border-secondary">
 					<div class="card-header bg-secondary">
@@ -254,14 +258,14 @@
 										<label for="hook<?php echo $deviceNum; ?>ein_url" class="col-md-4 col-form-label">Einschalt-URL</label>
 										<div class="col">
 											<input class="form-control" type="text" name="hook<?php echo $deviceNum; ?>ein_url" id="hook<?php echo $deviceNum; ?>ein_url" value="<?php echo htmlspecialchars(${"hook" . $deviceNum . "ein_urlold"}) ?>">
-											<span class="form-text small">Einschalturl die aufgerufen wird bei entsprechendem Überschuss.</span>
+											<span class="form-text small">Einschalt-Url die aufgerufen wird bei entsprechendem Überschuss.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
 										<label for="hook<?php echo $deviceNum; ?>_dauer" class="col-md-4 col-form-label">Einschaltdauer</label>
 										<div class="col">
 											<input class="form-control" type="number" min="0" step="1" name="hook<?php echo $deviceNum; ?>_dauer" id="hook<?php echo $deviceNum; ?>_dauer" value="<?php echo ${"hook" . $deviceNum . "_dauerold"} ?>">
-											<span class="form-text small">Einschaltdauer in Minuten. Gibt an, wie lange das Gerät nach Start mindestens aktiv bleiben muss, ehe die Ausschalturl aufgerufen wird.</span>
+											<span class="form-text small">Einschaltdauer in Minuten. Gibt an, wie lange das Gerät nach Start mindestens aktiv bleiben muss, ehe die Ausschalt-Url aufgerufen wird.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
@@ -275,7 +279,7 @@
 										<label for="hook<?php echo $deviceNum; ?>aus_url" class="col-md-4 col-form-label">Ausschalt-URL</label>
 										<div class="col">
 											<input class="form-control" type="text" name="hook<?php echo $deviceNum; ?>aus_url" id="hook<?php echo $deviceNum; ?>aus_url" value="<?php echo htmlspecialchars(${"hook" . $deviceNum . "aus_urlold"}) ?>">
-											<span class="form-text small">Ausschalturl, die aufgerufen wird bei entsprechendem Überschuss.</span>
+											<span class="form-text small">Ausschalt-Url, die aufgerufen wird bei entsprechendem Überschuss.</span>
 										</div>
 									</div>
 									<div class="form-row mb-1">
@@ -363,7 +367,7 @@
 											<label for="verbraucher<?php echo $deviceNum; ?>_urlw" class="col-md-4 col-form-label">URL Leistung</label>
 											<div class="col">
 												<input class="form-control" type="text" name="verbraucher<?php echo $deviceNum; ?>_urlw" id="verbraucher<?php echo $deviceNum; ?>_urlw" value="<?php echo htmlspecialchars(${"verbraucher" . $deviceNum . "_urlwold"}) ?>">
-												<span class="form-text small">URL des Verbrauchers, welche die Momentanleistung in Watt zurück gibt.</span>
+												<span class="form-text small">URL des Verbrauchers, welche die aktuelle Leistung in Watt zurück gibt.</span>
 											</div>
 										</div>
 										<div class="form-row mb-1">

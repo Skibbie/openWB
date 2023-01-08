@@ -12,7 +12,7 @@
  * @param {string} cvalue cookie value
  * @param {int} exdays expires in days
  */
-function setCookie(cname, cvalue, exdays) {
+ function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires=" + d.toGMTString();
@@ -45,6 +45,45 @@ function getCookie(cname) {
 var themeCookie = getCookie('openWBTheme');
 if( '' != themeCookie ){
     $('head').append('<link rel="stylesheet" href="themes/' + themeCookie + '/settings.css?v=20210330">');
+}
+
+/**
+ * Toggles one or more password input fields to type=text
+ * @param {string} inputQuery JQuery select statement for input field(s) to toggle
+ * @param {string} iconQuery JQuery select statement for optional icon(s) to toggle
+ */
+function togglePasswordInput(inputQuery, iconQuery = undefined) {
+    var newType = "password";
+    var newIcon = "fa-lock";
+    var oldIcon = "fa-unlock";
+    var inputElements = $(inputQuery);
+    if (inputElements[0].type == "password") {
+        newType = "text";
+        newIcon = "fa-unlock";
+        oldIcon = "fa-lock";
+    }
+    inputElements.each(
+        function( index, element ) {
+            element.type = newType;
+        }
+    );
+    if (iconQuery !== undefined) {
+        $(iconQuery).removeClass(oldIcon).addClass(newIcon);
+    }
+};
+
+/**
+ * checks if the two input elements value match
+ * @param {String} inputQuery JQuery select statement for exact two input fields to check
+ */
+function checkPasswordMatch(inputQuery) {
+    var inputElements = $(inputQuery);
+    if (inputElements[0].value != inputElements[1].value) {
+        inputElements[1].setCustomValidity('Die Passwörter müssen identisch sein.');
+    } else {
+        // input is valid -- reset the error message
+        inputElements[1].setCustomValidity('');
+    }
 }
 
 /**
@@ -164,7 +203,7 @@ function setToggleBtnGroup(groupId, option) {
     /** @function setInputValue
      * sets the value-label (if exists) attached to the element to the element value
      * @param {string} elementId - the id of the button group
-     * @param {string} option - the option the group btns will be set to
+     * @param {string} option - the option the group buttons will be set to
      * @requires data-attribute 'option' (unique for group) assigned to every radio-btn
      */
     $('input[name=' + groupId + '][data-option="' + option + '"]').prop('checked', true);
@@ -192,14 +231,14 @@ function sendValues() {
         $('#saveSettingsBtn').prop('disabled', true);
         $('#modalDefaultsBtn').prop('disabled', true);
         // delay in ms between publishes
-        var intervall = 200;
+        var interval = 200;
         // then send changed values
 
         Object.keys(changedValues).forEach(function(topic, index) {
             var value = this[topic].toString();
             setTimeout(function () {
                 // console.log("publishing changed value: "+topic+": "+value);
-                // as all empty messages are not processed by mqttsub.py, we have to send something usefull
+                // as all empty messages are not processed by mqttsub.py, we have to send something useful
                 if ( value.length == 0 ) {
                     publish("none", topic);
                     // delete empty values as we will never get an answer
@@ -208,7 +247,7 @@ function sendValues() {
                 } else {
                     publish(value, topic);
                 }
-            }, index * intervall);
+            }, index * interval);
         }, changedValues);
 
     } else {

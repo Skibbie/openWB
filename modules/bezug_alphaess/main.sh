@@ -1,9 +1,17 @@
 #!/bin/bash
-if [[ $alphav123 == "1" ]]; then
-	python /var/www/html/openWB/modules/bezug_alphaess/readv123.py
+OPENWBBASEDIR=$(cd "$(dirname "$0")/../../" && pwd)
+RAMDISKDIR="${OPENWBBASEDIR}/ramdisk"
+#DMOD="EVU"
+DMOD="MAIN"
+
+if [ ${DMOD} == "MAIN" ]; then
+	MYLOGFILE="${RAMDISKDIR}/openWB.log"
 else
-	python /var/www/html/openWB/modules/bezug_alphaess/readalpha.py
+	MYLOGFILE="${RAMDISKDIR}/evu.log"
 fi
 
-wattbezug=$(</var/www/html/openWB/ramdisk/wattbezug)
-echo $wattbezug
+bash "$OPENWBBASEDIR/packages/legacy_run.sh" "modules.devices.alpha_ess.device" "counter" "${alphasource}" "${alphav123}" "${alphaip}" >>"$MYLOGFILE" 2>&1
+ret=$?
+
+openwbDebugLog ${DMOD} 2 "EVU RET: ${ret}"
+cat "${RAMDISKDIR}/wattbezug"

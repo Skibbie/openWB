@@ -1,4 +1,15 @@
 #!/bin/bash
-python /var/www/html/openWB/modules/wr_sungrow/sungrow.py $speicher1_ip
-pvwatt=$(</var/www/html/openWB/ramdisk/pvwatt)
-echo $pvwatt
+OPENWBBASEDIR=$(cd "$(dirname "$0")/../../" && pwd)
+RAMDISKDIR="$OPENWBBASEDIR/ramdisk"
+DMOD="PV"
+#DMOD="MAIN"
+
+if [ ${DMOD} == "MAIN" ]; then
+	MYLOGFILE="$RAMDISKDIR/openWB.log"
+else
+	MYLOGFILE="$RAMDISKDIR/nurpv.log"
+fi
+
+bash "$OPENWBBASEDIR/packages/legacy_run.sh" "modules.devices.sungrow.device" "inverter" "$speicher1_ip" "$sungrowspeicherport" "$sungrowspeicherid" "1" >>"$MYLOGFILE" 2>&1
+
+cat "$RAMDISKDIR/pvwatt"
